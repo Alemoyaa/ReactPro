@@ -1,29 +1,36 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap } from 'gsap';
 
-const MAXIMUN_COUNT = 10;
-
-export const useCounter = () => {
+export const useCounter = ({ maxCount = 10 }) => {
     const [counter, setCounter] = useState(5);
-    const counterElement = useRef<HTMLHeadingElement>(null );
+    const elementToAnimate = useRef<HTMLHeadingElement>(null);
+
+    const tl = useRef(gsap.timeline());
 
     const handleClick = () => {
-        setCounter(prev => Math.min(prev + 1, MAXIMUN_COUNT));
+        setCounter(prev => Math.min(prev + 1, maxCount));
     }
 
+    useLayoutEffect(() => {
+        // if (counter < maxCount) return;
+        // console.log('No se puede porque es mayor a ', maxCount);
+        if (!elementToAnimate.current) return;
+
+        tl.current.to(elementToAnimate.current,{ y: -10, duration: 0.5, ease: 'ease.out' })
+          .to(elementToAnimate.current,{ y: 0, duration: 0.5, ease: 'bounce.out' }).pause();
+
+    }, [counter])
+
+    
     useEffect(() => {
-        if (counter < MAXIMUN_COUNT) return;
-        console.log('No se puede porque es mayor a ', MAXIMUN_COUNT);
+        // if (counter < maxCount) return;
 
-        const tl = gsap.timeline();
-        tl.to(counterElement.current,{ y: -10, duration: 0.5, ease: 'ease.out' })
-          .to(counterElement.current,{ y: 0, duration: 0.5, ease: 'bounce.out' })
-
+        tl.current.play(0);
     }, [counter])
 
     return {
         counter,
-        counterElement,
+        elementToAnimate,
         handleClick
     }
 }
