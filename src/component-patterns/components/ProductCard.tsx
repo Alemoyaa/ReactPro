@@ -1,8 +1,8 @@
-import { createContext, CSSProperties, ReactElement } from "react";
+import { createContext, CSSProperties } from "react";
 import { ProductButtons, ProductImage, ProductTitle } from ".";
 
 import { useProduct } from "../hooks/useProduct";
-import { onChangeArgs, Product, ProductContextProps } from "../interfaces/interfaces";
+import { InitialValues, onChangeArgs, Product, ProductCardHandlers, ProductContextProps } from "../interfaces/interfaces";
 
 import styles from "../styles/styles.module.css"
 
@@ -11,26 +11,33 @@ const { Provider } = ProductContext;
 
 export interface Props {
     product: Product;
-    children?: ReactElement | ReactElement[];
+    // children?: ReactElement | ReactElement[];
+    children: ( args: ProductCardHandlers ) => JSX.Element;
     className?: string;
     style?: CSSProperties;
     onChange?: ( args: onChangeArgs ) => void;
     value?: number;
+    initialValues: InitialValues;
 }
 
-export const ProductCard = ({ children, product, className, style, onChange, value }: Props) => {
-    const { counter, increaseBy } = useProduct({ onChange, product, value });
+export const ProductCard = ({ children, product, className, style, onChange, value, initialValues }: Props) => {
+    
+    const { counter, maxCount, isMaxCountReached, increaseBy, reset } = useProduct({ onChange, product, value, initialValues });
 
     return (
-        <Provider value={{ counter, increaseBy, product }}>
+        <Provider value={{ counter, increaseBy, maxCount, product }}>
             <div className={`${styles.productCard} ${className}`}
                 style={ style }>
-                { children }
-                {/* <ProductImage img={product.img} />
-
-                <ProductTitle title={product.title} />
-
-                <ProductButtons counter={counter} increaseBy={increaseBy} /> */}
+                { 
+                    children({
+                        count: counter,
+                        isMaxCountReached,
+                        maxCount: initialValues.maxCount,
+                        product,
+                        increaseBy,
+                        reset
+                    }) 
+                }
             </div>
         </Provider>
     )
