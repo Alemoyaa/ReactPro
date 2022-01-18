@@ -1,9 +1,12 @@
 import { PlacesProvider } from "./context/index"
+import { HomePage } from "./screens"
+
+import './styles.css'
 
 export const Mapps = () => {
     return (
         <PlacesProvider>
-            <h1>Hola mundo de nuevo</h1>
+            <HomePage />
         </PlacesProvider>
     )
 }
