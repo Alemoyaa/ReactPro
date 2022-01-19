@@ -1,12 +1,15 @@
-import { PlacesProvider } from "./context/index"
+import { MapProvider, PlacesProvider } from "./context/index"
 import { HomePage } from "./screens"
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 import './styles.css'
 
 export const Mapps = () => {
     return (
         <PlacesProvider>
-            <HomePage />
+            <MapProvider>
+                <HomePage />
+            </MapProvider>
         </PlacesProvider>
     )
 }
