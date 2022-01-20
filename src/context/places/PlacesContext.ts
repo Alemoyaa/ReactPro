@@ -4,6 +4,8 @@ import { createContext } from "react";
 export interface PlacesContextProps {
     isLoading: boolean;
     userLocation?: [number, number];
+    isLoadingPlaces: boolean
+    places: Feature[]
 
     searchPlacesByTerm: (query: string) => Promise<Feature[]>;
 }
